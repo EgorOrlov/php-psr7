@@ -1,0 +1,25 @@
+elseif ($path ==='/about'){
+    
+    $action = function(){
+        return new HtmlResponse('I am a simple site');
+    };
+    
+} elseif ($path ==='/blog'){
+    $action = function(){
+        return new JsonResponse([
+            ['id' => 2, 'title' => 'The Second Post'],
+            ['id' => 1, 'title' => 'The First Post'],
+       ]);
+    };
+}elseif (preg_match('#^/blog/(?P<id>\d+)$#i', $path, $matches)) {
+    
+    $request = $request->withAttribute('id');
+    
+    $action = function($id,ServerRequestInterface $request){
+        $id = $request->getAttribute('id');
+        if ($id>2){
+            return new JsonResponse(['error'=>'Underfined page'], 404);
+        
+        return new JsonResponse(['id'=>$id, 'title'=>'Post #'. $id]);
+        };
+};
