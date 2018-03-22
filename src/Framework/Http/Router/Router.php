@@ -15,25 +15,9 @@ class Router
     public function match(ServerRequestInterface $request): Result
     {
         foreach ($this->routes->getRoutes() as $route){
-            
-            
-            if ($route->methods && !\in_array($request->getMethod(), $route->methods, true)){
-               
-                continue; 
-            }
-            $pattern = preg_replace_callback('~\{([^\}]+)\}~', function ($matches) use ($route) {
-                $argument = $matches[1];
-                $replace = $route->tokens[$argument] ?? '[^}]+';
-                return '(?P<' . $argument . '>' . $replace . ')';
-            },$route->pattern);
-            
-            $path = $request->getUri()->getPath();
-            if (preg_match('~^'. $pattern. '$~i'. $path, $matches)) {
-                
-                return new Result(
-                    $route->name,
-                    $route->handler,
-                    array_filter($matches, '\is_string', ARRAY_FILTER_USE_KEY));
+             $result = $route->match($request);
+                if($result){
+                return $result;
             }
         }
         
