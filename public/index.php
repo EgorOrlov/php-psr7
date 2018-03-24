@@ -13,6 +13,7 @@ require 'vendor/autoload.php';
 
 ###initialization
 
+$aura = new Aura\Router\RouterContainer();
 $routes = new RouterCollection();
 
 $routes->get('home', '/', Action\HelloAction::class);
@@ -20,7 +21,7 @@ $routes->get('about', '/about', Action\AboutAction::class);
 $routes->get('blog', '/blog',  Action\Bloog\IndexAction::class);
 $routes->get('blog_show', '/blog/{id}',Action\Blog\ShowAction::class, ['id' =>'\d+']);
 
-$router = new Router($routes);
+$router = new AuraRouterAdapter($aura);
 $resolver = new \Framework\Http\ActionResolver();
 
 ###Runing
