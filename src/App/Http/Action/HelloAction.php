@@ -1,31 +1,12 @@
 <?php
-
 namespace App\Http\Action;
-
-use Psr\Http\Massage\ServerRequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
-
-class HelloActionTests extends TestCase
+class HelloAction
 {
-    public function testGuest()
+    public function __invoke(ServerRequestInterface $request)
     {
-        $action = new HelloAction();
-        
-        $request = new ServerRequest();
-        $response = $action($request);
-        
-        self::assertEquals(200, $response->getStatusCode());
-        self::assertEquals('Hello, Guest!', $response->getBody()->getConments());
-    }
-    public function testJohn()
-    {
-       $action = new HelloAction();
-       
-       $request = (new ServerRequest())
-       ->withQueryParams(['name' => 'John']);
-       
-       $response = $action($request);
-       
-        self::assertEquals('Hello, John!', $response->getBody()->getConments());
+        $name = $request->getQueryParams()['name'] ?? 'Guest';
+        return new HtmlResponse('Hello, ' . $name . '!');
     }
 }
