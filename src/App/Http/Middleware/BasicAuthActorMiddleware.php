@@ -1,30 +1,23 @@
 <?php
-
 namespace App\Http\Middleware;
-
-use Psr\Http\Massage\ResponseInterface;
-use Psr\Http\Massage\ServerRequestInterface;
-use Interope\Http\Server\MiddlewareInterface;
-use Interope\Http\Server\RequestHandlerInterface;
-
-class BasicAuthActionMiddleware implements MiddlewareInterface
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+class BasicAuthMiddleware implements MiddlewareInterface
 {
     public const ATTRIBUTE = '_user';
-    
     private $users;
-    private $response;
-    
-    public function __construct( array $users, RequestHandlerInterface $responsePrototype)
+    private $responsePrototype;
+    public function __construct(array $users, ResponseInterface $responsePrototype)
     {
         $this->users = $users;
-        $this->response = $responsePrototype;
+        $this->responsePrototype = $responsePrototype;
     }
-    
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $username = $request->getServerParams()['PHP_AUTH_USER'] ?? null;
-        $username = $request->getServerParams()['PHP_AUTH_PW'] ?? null;
-        
+        $password = $request->getServerParams()['PHP_AUTH_PW'] ?? null;
         if (!empty($username) && !empty($password)) {
             foreach ($this->users as $name => $pass) {
                 if ($username === $name && $password === $pass) {
@@ -32,16 +25,8 @@ class BasicAuthActionMiddleware implements MiddlewareInterface
                 }
             }
         }
-        return $this->response
-        ->withStatus (401)
-        ->withHeader ('WWW-Authenticate', 'Basic realm=Restricted area');
+        return $this->responsePrototype
+            ->withStatus(401)
+            ->withHeader('WWW-Authenticate', 'Basic realm=Restricted area');
     }
 }
-
-$responsePrototype = new \Zend\Diactoros\Response();
-
-$request = new \Zend\Diactoros\ServerRequest();
-$middeware = new BasicAuthActionMiddleware([]);
-$next = new \App\Http\Middleware\NotFoundHandler();
-
-$response = $middeware($request, $next);

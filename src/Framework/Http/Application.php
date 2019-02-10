@@ -1,12 +1,12 @@
 <?php
 namespace Framework\Http;
 
-class Application extends Pipeline
+class Application extends MidlewarePipe
 {
     private $resolver;
     private $defoult;
     
-    public function __construct(MiddlewareResolver $resolver)
+    public function __construct(MiddlewareResolver $resolver, callable $defoult)
     {
         parrent ::__construct();
         $this->resolver = $resolver;

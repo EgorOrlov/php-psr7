@@ -11,6 +11,7 @@ class ProfilerMiddleware
     {
         $start = microtime(true);
         
+        /** @var ResponseInterface $response */
         $response = $next($request);
         
         $stop = microtime(true);
@@ -18,3 +19,4 @@ class ProfilerMiddleware
         return $response->withHeader('X-Profile-Time', $stop - $start);
     }
 }
+

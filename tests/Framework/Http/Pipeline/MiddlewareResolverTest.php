@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Framework\Http\Pipeline;
+
 use Framework\Http\Pipeline\MiddlewareResolver;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
@@ -11,6 +12,7 @@ use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmptyResponse;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\ServerRequest;
+
 class MiddlewareResolverTest extends TestCase
 {
     /**
